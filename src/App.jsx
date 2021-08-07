@@ -1,7 +1,14 @@
-import React from 'react'
+import React, {useState, useRef} from 'react'
 import './App.css';
 
 function App() {
+
+  const [searchText, setSearchText] = useState('')
+  const textValue = useRef()
+
+  const handleSearchBtn = () =>{
+    console.log(textValue, 'useRef');
+  }
   // const callApi = async () => {
   //   let response = await fetch(
   //     // `https://api.openweathermap.org/data/2.5/weather?q=${search}&APPID=87e794f41494a00278a7066a3e7e4d87&units=metric`
@@ -23,18 +30,20 @@ function App() {
         <div className="container-fluid a">
           <form >
             <div className="input-group my-3">
-              {/*         <input
-              type="text"
-              className="form-control"
-              placeholder="Recipient's username"
-              aria-label="Recipient's username"
-              aria-describedby="button-addon2"
-            /> */}
-              {/* <label forhtml="cityName" className="form-label">Enter city name</label> */}
-              <input className="form-control" list="datalistOptions" id="cityName" placeholder="Enter city name..." />
-              {/* <button className="btn btn-outline-Primary" type="button" id="button-addon2">Button</button> */}
-              <button type="submit" className="btn btn-outline-primary" style={{ border: "1px solid white" }} >
-                <i className="fa fa-search" style={{ color: 'white' }}></i>
+              <input
+                className="form-control"
+                list="datalistOptions"
+                id="cityName"
+                placeholder="Enter city name..."
+                ref={textValue}
+              />
+              <button
+                type="submit"
+                className="btn btn-outline-primary"
+                style={{ border: "1px solid white" }}
+                onClick={handleSearchBtn}
+              >
+                <i className="fa fa-search" ></i>
               </button>
 
               <datalist id="datalistOptions">
@@ -57,27 +66,37 @@ function App() {
             <h5>Saturday, August 7, 2021</h5>
 
           </div>
-          <div className="sectionContainer row">
+          <div className="sectionContainer row a">
 
             <div className="w-100"></div>
 
-            <div className="col-sm-6">
-              <h1>21 degree</h1>
-            </div>
-
-            <div className="col-sm-6">
-              <div className="col">
-                <div className="row">
-                  <div className="col-sm-4">High</div>
-                  <div className="col-sm-4">Wind</div>
-                  <div className="col-sm-4">Sunrise</div>
+            <div className="col-lg-6">
+              <div className='d-flex flex-row w-100 text-center my-3'>
+                {/* <div className=' my-3'> */}
+                <div className="w-50 py-4 a">
+                  <i className='fas fa-cloud-sun'></i>
+                </div>
+                <div className="w-50 py-3  a">
+                  <h1 className="temHeading">21&#8451;</h1>
+                  <h3 style={{ fontWeight: '300' }} className='temHeading2'>Mostly sunny</h3>
                 </div>
               </div>
-              <div className="col">
-                <div className="row">
-                  <div className="col-sm-4">Low</div>
-                  <div className="col-sm-4">Rain</div>
-                  <div className="col-sm-4">Sunset</div>
+              {/* </div> */}
+            </div>
+
+            <div className="col-lg-6 a">
+              <div className="col my-4 a">
+                <div className="row my-1 a">
+                  <div className="col-sm-4 py-2 text-center a"><h5>a</h5> <span>High</span></div>
+                  <div className="col-sm-4 py-2 text-center a"><h5>a</h5> <span>Wind</span></div>
+                  <div className="col-sm-4 py-2 text-center a"><h5>a</h5> <span>Sunrise</span></div>
+                </div>
+              </div>
+              <div className="col my-3 a">
+                <div className="row my-1 a">
+                  <div className="col-sm-4 py-2 text-center a"><h5>a</h5> <span>Low</span></div>
+                  <div className="col-sm-4 py-2 text-center a"><h5>a</h5> <span>Rain</span></div>
+                  <div className="col-sm-4 py-2 text-center a"><h5>a</h5> <span>Sunset</span></div>
                 </div>
               </div>
             </div>
