@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
+import moment from 'moment'
 import './App.css';
 
 
@@ -13,6 +14,7 @@ function App() {
   const [sunrise, setSunrise] = useState('')
   const [sunset, setSunset] = useState('')
   const [humidity, setHumidity] = useState('')
+  const [pressure, setPressure] = useState('')
   const [feelsLike, setfeelsLike] = useState('')
   const [windSpeed, setwindSpeed] = useState('')
   const [weatherDescription, setweatherDescription] = useState('')
@@ -60,23 +62,32 @@ function App() {
       setCityName(res.data.name);
       //humidity
       setHumidity(res.data.main.humidity)
+      //pressure
+      setPressure(res.data.main.pressure)
       //feelLike
       setfeelsLike(res.data.main.feels_like)
       //wind
       setwindSpeed(res.data.wind.speed)
       //description
-      // setweatherDescription(res.data.weather[0].desciption)
-      // console.log(res.data.weather);
-      // console.log(res.data.weather[0]);
-      setweatherDescription(res.data.weather[0].description);
+      const capitalizeFirstLetter = ([first, ...rest], locale = navigator.language) =>
+        first.toLocaleUpperCase(locale) + rest.join('')
+
+      // console.log(
+      //   capitalizeFirstLetter(res.data.weather[0].description), // Foo
+      // )
+      setweatherDescription(capitalizeFirstLetter(res.data.weather[0].description));
       //sunrise
       let sunriseMiliseconds = res.data.sys.sunrise;
       let sunriseActualTime = new Date(sunriseMiliseconds * 1000);
-      setSunrise(sunriseActualTime.toString());
+      let momentSunriseTime = moment(sunriseActualTime.toString()).format('hh:mm')
+      // console.log(momentSunriseTime);
+      setSunrise(momentSunriseTime);
       //sunset
       let sunsetMiliseconds = res.data.sys.sunset;
       let sunsetActualTime = new Date(sunsetMiliseconds * 1000);
-      setSunset(sunsetActualTime.toString());
+      let momentSunsetTime = moment(sunsetActualTime.toString()).format('hh:mm')
+      // console.log(momentSunsetTime);
+      setSunset(momentSunsetTime);
 
       setSearchText(responseData)
     })
@@ -91,7 +102,7 @@ function App() {
       <button onClick={callApi}>Press</button> */}
 
       <div className="a container-md">
-        <h1 className='text-center'>
+        <h1 className='text-center py-5'>
           Weather App
         </h1>
         <div className="container-fluid a">
@@ -136,13 +147,11 @@ function App() {
             {dateAndTime ?
               <h5>{dateAndTime}</h5>
               :
-              <h5>Saturday, August 7, 2021</h5>
+              <h5>No data</h5>
             }
 
           </div>
-          <div className="sectionContainer row a">
-
-            <div className="w-100"></div>
+          <div className="sectionContainer row pb-5">
 
             <div className="col-lg-6">
               <div className='d-flex flex-row w-100 text-center my-3'>
@@ -151,8 +160,16 @@ function App() {
                   <i className='fas fa-cloud-sun'></i>
                 </div>
                 <div className="w-50 py-5  a">
-                  <h1 className="temHeading">{temperature}&#8451;</h1>
-                  <h3 style={{ fontWeight: '300' }} className='temHeading2'>{weatherDescription}</h3>
+                  {temperature ?
+                    <h1 className="temHeading">{temperature}&#8451;</h1>
+                    :
+                    "0 "
+                  }
+                  {weatherDescription ?
+                    <h3 style={{ fontWeight: '300' }} className='temHeading2'>{weatherDescription}</h3>
+                    :
+                    'No data'
+                  }
                 </div>
               </div>
               {/* </div> */}
@@ -161,22 +178,65 @@ function App() {
             <div className="col-lg-6 a">
               <div className="col my-4 a">
                 <div className="row my-1 a">
-                  <div className="col-sm-4 py-2 text-center a"><h5>{feelsLike}</h5> <span>Feels Like</span></div>
-                  <div className="col-sm-4 py-2 text-center a"><h5>{windSpeed}</h5> <span>Wind</span></div>
-                  <div className="col-sm-4 py-2 text-center a"><h5>{sunrise}</h5> <span>Sunrise</span></div>
-                  {/* <div className="col-sm-4 py-2 text-center a"><h5>a</h5> <span>Sunrise</span></div> */}
+                  <div className="col-sm-4 py-2 text-center a">
+                    {feelsLike ?
+                      <h5>{feelsLike}&#8451;</h5>
+                      :
+                      <h5>0</h5>
+                    }
+                    <span>Feels Like</span>
+                  </div>
+                  <div className="col-sm-4 py-2 text-center a">
+                    {windSpeed ?
+                      <h5>{windSpeed}mph</h5>
+                      :
+                      <h5>0</h5>
+                    }
+                    <span>Wind speed</span>
+                  </div>
+                  <div className="col-sm-4 py-2 text-center a">
+                    {sunrise ?
+                      <h5>{sunrise}am</h5>
+                      :
+                      <h5>0</h5>
+                    }
+                    <span>Sunrise</span>
+                  </div>
                 </div>
               </div>
               <div className="col my-3 a">
                 <div className="row my-1 a">
-                  <div className="col-sm-4 py-2 text-center a"><h5>{humidity}</h5> <span>Humidity</span></div>
-                  <div className="col-sm-4 py-2 text-center a"><h5>a</h5> <span>Rain</span></div>
-                  <div className="col-sm-4 py-2 text-center a"><h5>{sunset}</h5> <span>Sunset</span></div>
-                  {/* <div className="col-sm-4 py-2 text-center a"><h5>a</h5> <span>Sunset</span></div> */}
+                  <div className="col-sm-4 py-2 text-center a">
+                    {humidity ?
+                      <h5>{humidity}%</h5>
+                      :
+                      <h5>0</h5>
+                    }
+                    <span>Humidity</span>
+                  </div>
+                  <div className="col-sm-4 py-2 text-center a">
+                    {
+                      pressure ?
+                        <h5>{pressure}mb</h5>
+                        :
+                        <h5>0</h5>
+                    }
+                    <span>Pressure</span>
+                  </div>
+                  <div className="col-sm-4 py-2 text-center a">
+                    {
+                      sunset ?
+                        <h5>{sunset}pm</h5>
+                        :
+                        <h5>0</h5>
+                    }
+                    <span>Sunset</span>
+                  </div>
                 </div>
               </div>
             </div>
 
+            <div className="w-100 pb-4"></div>
 
           </div>
         </div>
