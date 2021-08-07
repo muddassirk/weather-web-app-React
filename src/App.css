@@ -18,7 +18,7 @@
 }
 .temHeading{
   /* font-size: 24px; */
-  font-size: calc(4.875rem + 1.5vw);
+  font-size: calc(2.875rem + 1.5vw);
   font-weight: bold;
   color: white;
   
@@ -29,7 +29,7 @@
    color: 'white'
 }
 
-@media (max-width: 480px) {
+@media (max-width: 568px) {
   .d-flex{
     min-width: 333px !important;
   }
@@ -38,7 +38,7 @@
     color: white;
   }
   .temHeading{
-    font-size: calc(3.875rem + 1.5vw);
+    font-size: calc(1.875rem + 1.5vw);
     font-weight: bold;
 
   }
