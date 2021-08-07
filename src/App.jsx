@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import './App.css';
 
 function App() {
@@ -6,17 +6,28 @@ function App() {
   const [searchText, setSearchText] = useState('')
   const textValue = useRef()
 
-  const handleSearchBtn = () =>{
-    console.log(textValue, 'useRef');
+  
+  // useEffect(() => {
+
+    const callApi = async () => {
+      let response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${searchText}&APPID=87e794f41494a00278a7066a3e7e4d87&units=metric`
+        // `https://api.openweathermap.org/data/2.5/weather?q=karachi&APPID=87e794f41494a00278a7066a3e7e4d87&units=metric`
+      );
+      const responseData = await response.json();
+      console.log(responseData);
+    };
+  // }, [searchText])
+
+  const handleSearchBtn = (e) => {
+    e.preventDefault()
+    // console.log(textValue.current.value, 'useRef');
+    setSearchText(textValue.current.value.toLowerCase())
+    callApi()
   }
-  // const callApi = async () => {
-  //   let response = await fetch(
-  //     // `https://api.openweathermap.org/data/2.5/weather?q=${search}&APPID=87e794f41494a00278a7066a3e7e4d87&units=metric`
-  //     // `https://api.openweathermap.org/data/2.5/weather?q=karachi&APPID=87e794f41494a00278a7066a3e7e4d87&units=metric`
-  //   );
-  //    responseData = await response.json();
-  //     console.log(responseData);
-  // };
+
+  console.log(searchText, 'dumy state value');
+
 
   return (
     <div className="App">
@@ -28,7 +39,7 @@ function App() {
           Weather App
         </h1>
         <div className="container-fluid a">
-          <form >
+          <form onSubmit={(e) => { handleSearchBtn(e) }}>
             <div className="input-group my-3">
               <input
                 className="form-control"
@@ -41,7 +52,7 @@ function App() {
                 type="submit"
                 className="btn btn-outline-primary"
                 style={{ border: "1px solid white" }}
-                onClick={handleSearchBtn}
+              // onClick={handleSearchBtn}
               >
                 <i className="fa fa-search" ></i>
               </button>
