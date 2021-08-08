@@ -1,11 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import moment from 'moment'
 import './App.css';
+import Cities from './cities.json'
 
 
 function App() {
 
+  // console.log(Cities[0]);
+  // console.log(Cities[0].name);
+  const [suggestions, setSuggestions] = useState([])
   const [searchText, setSearchText] = useState('')
   const [temperature, setTemperature] = useState('')
   const [cityName, setCityName] = useState('')
@@ -18,129 +22,121 @@ function App() {
   const [feelsLike, setfeelsLike] = useState('')
   const [windSpeed, setwindSpeed] = useState('')
   const [weatherDescription, setweatherDescription] = useState('')
-  const textValue = useRef()
-
-  // const callApi = async () => {
-  //   const response = await fetch(
-  //     `https://api.openweathermap.org/data/2.5/weather?q=${searchText}&APPID=87e794f41494a00278a7066a3e7e4d87&units=metric`
-  //     // `https://api.openweathermap.org/data/2.5/weather?q=karachi&APPID=87e794f41494a00278a7066a3e7e4d87&units=metric`
-  //   );
-  //   const responseData = await response.json();
-  //   console.log(responseData);
-  //   // console.log(responseData.sys.country);
-  //   // console.log(responseData.sys.sunrise);
-  //   // var sunrise = responseData.sys.sunrise / 60 / 60 / 24 ;
-  //   // console.log(sunrise);
-  // };
-  // callApi()
 
 
-  useEffect(() => {
-
-  }, [searchText])
-
-  const handleSearchBtn = (e) => {
-    e.preventDefault()
-    // console.log(textValue.current.value, 'useRef');
-    if (textValue.current.value.toLowerCase() > "0") {
-
-      axios.get(
-        `https://api.openweathermap.org/data/2.5/weather?q=${textValue.current.value.toLowerCase()}&APPID=87e794f41494a00278a7066a3e7e4d87&units=metric`
-      ).then(res => {
-        // console.log(res);
-        // console.log(res.data);
-        const responseData = res.data
-        // console.log(res.data.timezone);
-        //Data and Time
-        let timeZone = new Date(res.data.dt * 1000)
-        // console.log(timeZone);
-        setDateAndTime(timeZone.toString());
-        //temperature
-        setTemperature(res.data.main.temp)
-        //countryName
-        setCountryName(res.data.sys.country);
-        //cityName
-        setCityName(res.data.name);
-        //humidity
-        setHumidity(res.data.main.humidity)
-        //pressure
-        setPressure(res.data.main.pressure)
-        //feelLike
-        setfeelsLike(res.data.main.feels_like)
-        //wind
-        setwindSpeed(res.data.wind.speed)
-        //description
-        const capitalizeFirstLetter = ([first, ...rest], locale = navigator.language) =>
-          first.toLocaleUpperCase(locale) + rest.join('')
-
-        // console.log(
-        //   capitalizeFirstLetter(res.data.weather[0].description), // Foo
-        // )
-        setweatherDescription(capitalizeFirstLetter(res.data.weather[0].description));
-        //sunrise
-        let sunriseMiliseconds = res.data.sys.sunrise;
-        let sunriseActualTime = new Date(sunriseMiliseconds * 1000);
-        let momentSunriseTime = moment(sunriseActualTime.toString()).format('hh:mm')
-        // console.log(momentSunriseTime);
-        setSunrise(momentSunriseTime);
-        //sunset
-        let sunsetMiliseconds = res.data.sys.sunset;
-        let sunsetActualTime = new Date(sunsetMiliseconds * 1000);
-        let momentSunsetTime = moment(sunsetActualTime.toString()).format('hh:mm')
-        // console.log(momentSunsetTime);
-        setSunset(momentSunsetTime);
-
-        setSearchText(responseData)
+  const onChangeHandler = (val) => {
+    let filteredCities = []
+    // console.log(val.target.value)
+    if (val.length > 0) {
+      filteredCities = Cities.filter(city => {
+        const regex = new RegExp(`${val}`, 'gi');
+        return city.name.match(regex)
       })
-
-
-    }else {
-      return alert("Please enter a correct city name")
     }
+    // console.log("filteredCities", filteredCities);
+    setSearchText(val)
+    setSuggestions(filteredCities)
   }
 
-  // console.log(searchText, 'dumy state value');
+  const onSuggestHandler = (value) => {
+    setSearchText(value)
+    setSuggestions([])
+  }
+
+  useEffect(() => {
+    axios.get(
+      // `https://api.openweathermap.org/data/2.5/weather?q=${textValue.current.value.toLowerCase()}&APPID=87e794f41494a00278a7066a3e7e4d87&units=metric`
+      `https://api.openweathermap.org/data/2.5/weather?q=${searchText.toLowerCase()}&APPID=87e794f41494a00278a7066a3e7e4d87&units=metric`
+    ).then(res => {
+      // console.log(res);
+      // const responseData = res.data
+      // console.log(res.data.timezone);
+      //Data and Time
+      let timeZone = new Date(res.data.dt * 1000)
+      // console.log(timeZone);
+      setDateAndTime(timeZone.toString());
+      //temperature
+      setTemperature(res.data.main.temp)
+      //countryName
+      setCountryName(res.data.sys.country);
+      //cityName
+      setCityName(res.data.name);
+      //humidity
+      setHumidity(res.data.main.humidity)
+      //pressure
+      setPressure(res.data.main.pressure)
+      //feelLike
+      setfeelsLike(res.data.main.feels_like)
+      //wind
+      setwindSpeed(res.data.wind.speed)
+      //description
+      const capitalizeFirstLetter = ([first, ...rest], locale = navigator.language) =>
+        first.toLocaleUpperCase(locale) + rest.join('')
+
+      // console.log(
+      //   capitalizeFirstLetter(res.data.weather[0].description), // Foo
+      // )
+      setweatherDescription(capitalizeFirstLetter(res.data.weather[0].description));
+      //sunrise
+      let sunriseMiliseconds = res.data.sys.sunrise;
+      let sunriseActualTime = new Date(sunriseMiliseconds * 1000);
+      let momentSunriseTime = moment(sunriseActualTime.toString()).format('hh:mm')
+      // console.log(momentSunriseTime);
+      setSunrise(momentSunriseTime);
+      //sunset
+      let sunsetMiliseconds = res.data.sys.sunset;
+      let sunsetActualTime = new Date(sunsetMiliseconds * 1000);
+      let momentSunsetTime = moment(sunsetActualTime.toString()).format('hh:mm')
+      // console.log(momentSunsetTime);
+      setSunset(momentSunsetTime);
+
+      // setSearchText(responseData)
+    })
+
+  }, [suggestions])
+
 
 
   return (
     <div className="App">
-      {/* Hello world
-      <button onClick={callApi}>Press</button> */}
-
       <div className="a container-md">
         <h1 className='text-center py-5'>
           Weather App
         </h1>
         <div className="container-fluid a">
-          <form onSubmit={(e) => { handleSearchBtn(e) }}>
-            <div className="input-group my-3">
-              <input
-                className="form-control"
-                list="datalistOptions"
-                id="cityName"
-                placeholder="Enter city name..."
-                ref={textValue}
-              />
-              <button
-                type="submit"
-                className="btn btn-outline-primary"
-                style={{ border: "1px solid white" }}
-              // onClick={handleSearchBtn}
-              >
-                <i className="fa fa-search" ></i>
-              </button>
+          {/* <form onSubmit={(e) => { handleSearchBtn(e) }}> */}
+          {/* <form> */}
+          <div className="input-group my-3">
+            <input
+              className="form-control"
+              list="datalistOptions"
+              id="cityName"
+              placeholder="Enter city name..."
+              value={searchText}
+              onChange={(val) => onChangeHandler(val.target.value)}
+            />
+            <button
+              type="submit"
+              className="btn btn-outline-primary"
+              style={{ border: "1px solid white" }}
+              onClick={()=>onSuggestHandler(searchText)}
+            >
+              <i className="fa fa-search" ></i>
+            </button>
 
-              <datalist id="datalistOptions">
-                <option value="Karachi" />
-                <option value="Islamabad" />
-                <option value="San Francisco" />
-                <option value="New York" />
-                <option value="Seattle" />
-                <option value="Los Angeles" />
-                <option value="Chicago" />
-              </datalist>
-            </div>
-          </form>
+            {suggestions && suggestions.map((suggest, index) =>
+              // console.log(suggest);
+              // console.log(suggest.name);
+              <div
+                key={index}
+                className='suggestion col-md-12 justify-content-md-center px-3 py-1'
+                onClick={() => onSuggestHandler(suggest.name)}
+              >
+                {suggest.name}
+              </div>
+            )}
+          </div>
+          {/* </form> */}
 
 
           <div className="w-100 py-4">
@@ -159,7 +155,7 @@ function App() {
           </div>
           <div className="sectionContainer row pb-5">
 
-            <div className="col-lg-6">
+            <div className="col-lg-6 forBorder">
               <div className='d-flex flex-row w-100 text-center my-3'>
                 {/* <div className=' my-3'> */}
                 <div className="w-50 py-5 a">
@@ -180,7 +176,7 @@ function App() {
               </div>
               {/* </div> */}
             </div>
-              {/* <div className="verticalLine mx-0"></div> */}
+            {/* <div className="verticalLine mx-0"></div> */}
 
 
             <div className="col-lg-6 a">
