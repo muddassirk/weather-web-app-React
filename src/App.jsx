@@ -42,55 +42,61 @@ function App() {
   const handleSearchBtn = (e) => {
     e.preventDefault()
     // console.log(textValue.current.value, 'useRef');
+    if (textValue.current.value.toLowerCase() > "0") {
 
-    axios.get(
-      `https://api.openweathermap.org/data/2.5/weather?q=${textValue.current.value.toLowerCase()}&APPID=87e794f41494a00278a7066a3e7e4d87&units=metric`
-    ).then(res => {
-      // console.log(res);
-      console.log(res.data);
-      const responseData = res.data
-      // console.log(res.data.timezone);
-      //Data and Time
-      let timeZone = new Date(res.data.dt * 1000)
-      // console.log(timeZone);
-      setDateAndTime(timeZone.toString());
-      //temperature
-      setTemperature(res.data.main.temp)
-      //countryName
-      setCountryName(res.data.sys.country);
-      //cityName
-      setCityName(res.data.name);
-      //humidity
-      setHumidity(res.data.main.humidity)
-      //pressure
-      setPressure(res.data.main.pressure)
-      //feelLike
-      setfeelsLike(res.data.main.feels_like)
-      //wind
-      setwindSpeed(res.data.wind.speed)
-      //description
-      const capitalizeFirstLetter = ([first, ...rest], locale = navigator.language) =>
-        first.toLocaleUpperCase(locale) + rest.join('')
+      axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${textValue.current.value.toLowerCase()}&APPID=87e794f41494a00278a7066a3e7e4d87&units=metric`
+      ).then(res => {
+        // console.log(res);
+        // console.log(res.data);
+        const responseData = res.data
+        // console.log(res.data.timezone);
+        //Data and Time
+        let timeZone = new Date(res.data.dt * 1000)
+        // console.log(timeZone);
+        setDateAndTime(timeZone.toString());
+        //temperature
+        setTemperature(res.data.main.temp)
+        //countryName
+        setCountryName(res.data.sys.country);
+        //cityName
+        setCityName(res.data.name);
+        //humidity
+        setHumidity(res.data.main.humidity)
+        //pressure
+        setPressure(res.data.main.pressure)
+        //feelLike
+        setfeelsLike(res.data.main.feels_like)
+        //wind
+        setwindSpeed(res.data.wind.speed)
+        //description
+        const capitalizeFirstLetter = ([first, ...rest], locale = navigator.language) =>
+          first.toLocaleUpperCase(locale) + rest.join('')
 
-      // console.log(
-      //   capitalizeFirstLetter(res.data.weather[0].description), // Foo
-      // )
-      setweatherDescription(capitalizeFirstLetter(res.data.weather[0].description));
-      //sunrise
-      let sunriseMiliseconds = res.data.sys.sunrise;
-      let sunriseActualTime = new Date(sunriseMiliseconds * 1000);
-      let momentSunriseTime = moment(sunriseActualTime.toString()).format('hh:mm')
-      // console.log(momentSunriseTime);
-      setSunrise(momentSunriseTime);
-      //sunset
-      let sunsetMiliseconds = res.data.sys.sunset;
-      let sunsetActualTime = new Date(sunsetMiliseconds * 1000);
-      let momentSunsetTime = moment(sunsetActualTime.toString()).format('hh:mm')
-      // console.log(momentSunsetTime);
-      setSunset(momentSunsetTime);
+        // console.log(
+        //   capitalizeFirstLetter(res.data.weather[0].description), // Foo
+        // )
+        setweatherDescription(capitalizeFirstLetter(res.data.weather[0].description));
+        //sunrise
+        let sunriseMiliseconds = res.data.sys.sunrise;
+        let sunriseActualTime = new Date(sunriseMiliseconds * 1000);
+        let momentSunriseTime = moment(sunriseActualTime.toString()).format('hh:mm')
+        // console.log(momentSunriseTime);
+        setSunrise(momentSunriseTime);
+        //sunset
+        let sunsetMiliseconds = res.data.sys.sunset;
+        let sunsetActualTime = new Date(sunsetMiliseconds * 1000);
+        let momentSunsetTime = moment(sunsetActualTime.toString()).format('hh:mm')
+        // console.log(momentSunsetTime);
+        setSunset(momentSunsetTime);
 
-      setSearchText(responseData)
-    })
+        setSearchText(responseData)
+      })
+
+
+    }else {
+      return alert("Please enter a correct city name")
+    }
   }
 
   // console.log(searchText, 'dumy state value');
@@ -174,6 +180,8 @@ function App() {
               </div>
               {/* </div> */}
             </div>
+              {/* <div className="verticalLine mx-0"></div> */}
+
 
             <div className="col-lg-6 a">
               <div className="col my-4 a">
