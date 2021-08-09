@@ -44,62 +44,70 @@ function App() {
   }
 
   useEffect(() => {
-    axios.get(
-      // `https://api.openweathermap.org/data/2.5/weather?q=${textValue.current.value.toLowerCase()}&APPID=87e794f41494a00278a7066a3e7e4d87&units=metric`
-      `https://api.openweathermap.org/data/2.5/weather?q=${searchText.toLowerCase()}&APPID=87e794f41494a00278a7066a3e7e4d87&units=metric`
-    ).then(res => {
-      // console.log(res);
-      // const responseData = res.data
-      // console.log(res.data.timezone);
-      //Data and Time
-      let timeZone = new Date(res.data.dt * 1000)
-      // console.log(timeZone);
-      setDateAndTime(timeZone.toString());
-      //temperature
-      setTemperature(res.data.main.temp)
-      //countryName
-      setCountryName(res.data.sys.country);
-      //cityName
-      setCityName(res.data.name);
-      //humidity
-      setHumidity(res.data.main.humidity)
-      //pressure
-      setPressure(res.data.main.pressure)
-      //feelLike
-      setfeelsLike(res.data.main.feels_like)
-      //wind
-      setwindSpeed(res.data.wind.speed)
-      //description
-      const capitalizeFirstLetter = ([first, ...rest], locale = navigator.language) =>
-        first.toLocaleUpperCase(locale) + rest.join('')
+    if (searchText.length > 0) {
+      axios.get(
+        // `https://api.openweathermap.org/data/2.5/weather?q=${textValue.current.value.toLowerCase()}&APPID=87e794f41494a00278a7066a3e7e4d87&units=metric`
+        `https://api.openweathermap.org/data/2.5/weather?q=${searchText.toLowerCase()}&APPID=87e794f41494a00278a7066a3e7e4d87&units=metric`
+      ).then(res => {
+        // console.log(res);
+        // const responseData = res.data
+        //Data and Time
+        let timeZone = new Date(res.data.dt * 1000)
+        // console.log(timeZone);
+        setDateAndTime(timeZone.toString());
+        //temperature
+        setTemperature(res.data.main.temp)
+        //countryName
+        setCountryName(res.data.sys.country);
+        //cityName
+        setCityName(res.data.name);
+        //humidity
+        setHumidity(res.data.main.humidity)
+        //pressure
+        setPressure(res.data.main.pressure)
+        //feelLike
+        setfeelsLike(res.data.main.feels_like)
+        //wind
+        setwindSpeed(res.data.wind.speed)
+        //description
+        const capitalizeFirstLetter = ([first, ...rest], locale = navigator.language) =>
+          first.toLocaleUpperCase(locale) + rest.join('')
 
-      // console.log(
-      //   capitalizeFirstLetter(res.data.weather[0].description), // Foo
-      // )
-      setweatherDescription(capitalizeFirstLetter(res.data.weather[0].description));
-      //sunrise
-      let sunriseMiliseconds = res.data.sys.sunrise;
-      let sunriseActualTime = new Date(sunriseMiliseconds * 1000);
-      let momentSunriseTime = moment(sunriseActualTime.toString()).format('hh:mm')
-      // console.log(momentSunriseTime);
-      setSunrise(momentSunriseTime);
-      //sunset
-      let sunsetMiliseconds = res.data.sys.sunset;
-      let sunsetActualTime = new Date(sunsetMiliseconds * 1000);
-      let momentSunsetTime = moment(sunsetActualTime.toString()).format('hh:mm')
-      // console.log(momentSunsetTime);
-      setSunset(momentSunsetTime);
+        // console.log(
+        //   capitalizeFirstLetter(res.data.weather[0].description), // Foo
+        // )
+        setweatherDescription(capitalizeFirstLetter(res.data.weather[0].description));
+        //sunrise
+        let sunriseMiliseconds = res.data.sys.sunrise;
+        let sunriseActualTime = new Date(sunriseMiliseconds * 1000);
+        let momentSunriseTime = moment(sunriseActualTime.toString()).format('hh:mm')
+        // console.log(momentSunriseTime);
+        setSunrise(momentSunriseTime);
+        //sunset
+        let sunsetMiliseconds = res.data.sys.sunset;
+        let sunsetActualTime = new Date(sunsetMiliseconds * 1000);
+        let momentSunsetTime = moment(sunsetActualTime.toString()).format('hh:mm')
+        // console.log(momentSunsetTime);
+        setSunset(momentSunsetTime);
+      }).catch(err => {
+        // console.log(err);
+        // alert("Please input correct city name")
+      })
+    }
 
-      // setSearchText(responseData)
-    })
 
-  }, [suggestions])
+    // if (searchText !== cityName) {
+    //   alert("Please input correct city name")
+    // }
+
+  }, [searchText])
 
 
 
   return (
     <div className="App">
-      <div className="a container-md">
+      {/* <div className="a container-md" style={temperature ? {paddingBottom: '0'} : {paddingBottom: '10%'}} > */}
+      <div className="a container-md" style={temperature ? { paddingBottom: '0' } : { paddingBottom: '10%' }} >
         <h1 className='text-center py-5'>
           Weather App
         </h1>
@@ -119,27 +127,29 @@ function App() {
               type="submit"
               className="btn btn-outline-primary"
               style={{ border: "1px solid white" }}
-              onClick={()=>onSuggestHandler(searchText)}
+              onBlur={() => {
+                setTimeout(() => {
+                  setSuggestions([])
+                }, 100);
+              }}
+              onClick={() => onSuggestHandler(searchText)}
             >
               <i className="fa fa-search" ></i>
             </button>
-
-            {suggestions && suggestions.map((suggest, index) =>
-              // console.log(suggest);
-              // console.log(suggest.name);
-              <div
-                key={index}
-                className='suggestion col-md-12 justify-content-md-center px-3 py-1'
-                onClick={() => onSuggestHandler(suggest.name)}
-              >
-                {suggest.name}
-              </div>
-            )}
           </div>
+          {suggestions && suggestions.map((suggest, index) =>
+            <div
+              key={index}
+              className='suggestion col-md-12 justify-content-md-center px-3 py-1'
+              onClick={() => onSuggestHandler(suggest.name)}
+            >
+              {suggest.name}
+            </div>
+          )}
           {/* </form> */}
 
 
-          <div className="w-100 py-4">
+          <div className="w-100 py-4 sm-screen-heading">
             {cityName ?
               <h1>
                 {cityName},{countryName}
@@ -159,7 +169,13 @@ function App() {
               <div className='d-flex flex-row w-100 text-center my-3'>
                 {/* <div className=' my-3'> */}
                 <div className="w-50 py-5 a">
-                  <i className='fas fa-cloud-sun'></i>
+                  {
+                    temperature ?
+                      <i className='fas fa-cloud-sun'></i>
+                      :
+                      ''
+                  }
+
                 </div>
                 <div className="w-50 py-5  a">
                   {temperature ?
@@ -208,7 +224,8 @@ function App() {
                   </div>
                 </div>
               </div>
-              <div className="col my-3 a">
+
+              <div className="col my-3 a sm-screen-border">
                 <div className="row my-1 a">
                   <div className="col-sm-4 py-2 text-center a">
                     {humidity ?
