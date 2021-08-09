@@ -3,6 +3,7 @@ import axios from 'axios'
 import moment from 'moment'
 import './App.css';
 import Cities from './cities.json'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
 function App() {
@@ -127,14 +128,15 @@ function App() {
               type="submit"
               className="btn btn-outline-primary"
               style={{ border: "1px solid white" }}
-              onBlur={() => {
-                setTimeout(() => {
-                  setSuggestions([])
-                }, 100);
-              }}
+              // onBlur={() => {
+              //   setTimeout(() => {
+              //     setSuggestions([])
+              //   }, 100);
+              // }}
               onClick={() => onSuggestHandler(searchText)}
             >
               <i className="fa fa-search" ></i>
+              {/* <i class="fas fa-search"></i> */}
             </button>
           </div>
           {suggestions && suggestions.map((suggest, index) =>
@@ -159,7 +161,7 @@ function App() {
             {dateAndTime ?
               <h5>{dateAndTime}</h5>
               :
-              <h5>No data</h5>
+              <h5></h5>
             }
 
           </div>
@@ -171,7 +173,12 @@ function App() {
                 <div className="w-50 py-5 a">
                   {
                     temperature ?
-                      <i className='fas fa-cloud-sun'></i>
+                      // <i className='fas fa-cloud-sun'></i>
+                      temperature > '25' ?
+                      <i class="fa fa-sun-o" aria-hidden="true"></i>
+                      // <FontAwesomeIcon icon={["fal", "coffee"]} />
+                       :
+                        <i class="fa fa-cloud" aria-hidden="true"></i>
                       :
                       ''
                   }
@@ -186,7 +193,7 @@ function App() {
                   {weatherDescription ?
                     <h3 style={{ fontWeight: '300' }} className='temHeading2'>{weatherDescription}</h3>
                     :
-                    'No data'
+                    ''
                   }
                 </div>
               </div>

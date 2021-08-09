@@ -22,11 +22,13 @@
 .temHeading {
     /* font-size: 24px; */
     font-size: calc(2.875rem + 1.5vw);
-    font-weight: bold;
+    font-weight: 500;
     color: white;
 }
-
-.fas {
+.fas{
+    color: white;
+}
+.fa-sun-o, .fa-cloud {
     font-size: 160px;
     color: 'white'
 }
@@ -35,13 +37,13 @@
     .d-flex {
         min-width: 333px !important;
     }
-    .fas {
+    .fa-sun-o, .fa-cloud {
         font-size: 120px;
         color: white;
     }
     .temHeading {
         font-size: calc(1.875rem + 1.5vw);
-        font-weight: bold;
+        font-weight: 500;
     }
     .temHeading2 {
         font-size: 18px;
@@ -55,6 +57,13 @@
         border-bottom: 2px solid #ccc;
     }
     
+}
+h5{
+    font-weight: bold;
+}
+
+span{
+    font-weight: 100 !important;
 }
 
 .forBorder {
